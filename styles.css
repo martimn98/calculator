@@ -1,0 +1,92 @@
+html,
+body {
+    background-color: aliceblue;
+    font-size: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.calculator-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 500px;
+    height: 800px;
+    background-color: rgb(35, 35, 45);
+    box-sizing: border-box;
+    padding: 50px;
+    border-radius: 45px;
+}
+
+.buttons-container {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    grid-template-rows: repeat(7, 1fr);
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.screen {
+    grid-column: 1/5;
+    grid-row: 1/3;
+    color: white;
+    font-size: 6rem;
+    display: flex;
+    justify-content: end;
+    align-items: flex-end;
+    margin: 5px;
+    padding: 0px;
+}
+
+.button {
+    color: white;
+    background-color: rgb(70, 70, 70);
+    text-align: center;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 5px;
+}
+
+.button.light {
+    background-color: rgb(188, 188, 188);
+}
+
+.button.orange {
+    background-color: orange;
+}
+
+.button.orange.selected {
+    background-color: white;
+    color: orange;
+}
+
+.button.dark:hover {
+    background-color: hsl(0, 0%, 37%);
+}
+
+.button.light:hover {
+    background-color: hsl(0, 0%, 84%);
+}
+
+.button.orange:hover {
+    background-color: hsl(39, 100%, 60%);
+}
+
+.two-column {
+    grid-column: 1/3;
+    border-radius: 3rem;
+}
