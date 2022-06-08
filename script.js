@@ -1,16 +1,15 @@
-let displayContent = "";
-
 const numbers = document.querySelectorAll(".button.number");
 const display = document.querySelector(".screen");
 const clearButton = document.querySelector(".button.clear");
 const equalButton = document.querySelector(".button.equal");
 const operators = document.querySelectorAll(".button.operator");
+
 let currentOperator = "";
 let currentOperatorElement;
 let firstNumber;
-let secondNumber;
+let currentNumber = "";
 
-let displayingOperator = false;
+let firstInput = false;
 
 const maxDigits = 7;
 let currentDigits = 0;
@@ -24,8 +23,9 @@ operators.forEach(element => {
 })
 
 clearButton.addEventListener('click', clearDisplay);
-equalButton.addEventListener('click', function () {
-    operate(currentOperator, firstNumber, parseInt(displayContent));
+
+equalButton.addEventListener('click', function (e) {
+    operate(e, currentOperator, firstNumber, parseInt(currentNumber));
 });
 
 function add(a, b) {
@@ -45,7 +45,7 @@ function divide(a, b) {
     return a / b;
 }
 
-function operate(operator, a, b)
+function operate(e, operator, a, b)
 {
     let result;
     console.log(operator, a, b);
@@ -53,7 +53,7 @@ function operate(operator, a, b)
     if(operator === '+')
         result = add(a, b);
 
-    if(operator === '-')
+    if(operator === '−')
         result = subtract(a, b);
         
     if(operator === 'X')
@@ -62,46 +62,62 @@ function operate(operator, a, b)
     if(operator === '/')
         result = divide(a, b);
 
-    displayContent = result;
-    display.textContent = displayContent;
+    currentNumber = result;
+    display.textContent = currentNumber;
 
-    clearOperator();
+    if(e.currentTarget.textContent === "=")
+        clearOperator();
 
     firstNumber = result;
+    firstInput = true;
 
 }
 function numberClick(e)
 {
     if(currentDigits >= maxDigits) return;
 
-    if(displayingOperator)
+    if(firstInput)
     {
-        displayContent = e.currentTarget.textContent;
-        display.textContent = displayContent;
+        currentNumber = e.currentTarget.textContent;
+        display.textContent = currentNumber;
         currentDigits++;
+        firstInput = false;
         return;
     }
 
-    displayContent += e.currentTarget.textContent;
+    currentNumber += e.currentTarget.textContent;
     currentDigits++;
 
-    display.textContent = displayContent;
+    display.textContent = currentNumber;
 }
 
 function operatorClick(e)
 {
-    if(displayContent === "") return;
+    if(currentNumber === "") return;
+    
+    if(currentOperator != e.currentTarget.textContent)
+    {
+        clearOperator();
 
-    if(currentOperator != ""){
-        operate(currentOperator, firstNumber, parseInt(displayContent));
+        firstNumber = parseInt(currentNumber);
+
+        e.currentTarget.classList.add("selected");
+        currentOperatorElement = e.currentTarget;
+        firstInput = true;
+
+        currentDigits = 0;
+        currentOperator = e.currentTarget.textContent;
+    }
+    else if(currentOperator != ""){
+        operate(e, currentOperator, firstNumber, parseInt(currentNumber));
         return;
     }
 
-    firstNumber = parseInt(displayContent);
+    firstNumber = parseInt(currentNumber);
 
     e.currentTarget.classList.add("selected");
     currentOperatorElement = e.currentTarget;
-    displayingOperator = true;
+    firstInput = true;
 
     currentDigits = 0;
     currentOperator = e.currentTarget.textContent;
@@ -109,14 +125,19 @@ function operatorClick(e)
 
 function clearOperator()
 {
-    if(currentOperatorElement != undefined)
-        currentOperatorElement.classList.remove("selected");
+    currentOperator = "";
+
+    operators.forEach( (element) => {
+        element.classList.remove("selected");
+    });
 }
 
 function clearDisplay()
 {
-    displayContent = "";
-    display.textContent = displayContent;
+    currentNumber = "";
+    display.textContent = currentNumber;
     currentDigits = 0;
-    displayingOperator = false;
+    firstInput = false;
+    
+    clearOperator();
 }
