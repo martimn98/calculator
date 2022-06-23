@@ -95,8 +95,14 @@ function operatorClick(e)
 {
     if(currentNumber === "") return;
     
+    // If clicking on a different operator
     if(currentOperator != e.currentTarget.textContent)
     {
+        if(firstNumber != undefined && currentOperator != ""){
+            console.log("first number:" + firstNumber + "\ncurrent number:" + currentNumber);
+            operate(e, currentOperator, firstNumber, parseInt(currentNumber));
+        }
+
         clearOperator();
 
         firstNumber = parseInt(currentNumber);
