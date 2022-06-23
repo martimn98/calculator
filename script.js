@@ -2,6 +2,7 @@ const numbers = document.querySelectorAll(".button.number");
 const display = document.querySelector(".screen");
 const clearButton = document.querySelector(".button.clear");
 const equalButton = document.querySelector(".button.equal");
+const signButton = document.querySelector(".button.sign");
 const operators = document.querySelectorAll(".button.operator");
 
 let currentOperator = "";
@@ -27,6 +28,8 @@ clearButton.addEventListener('click', clearDisplay);
 equalButton.addEventListener('click', function (e) {
     operate(e, currentOperator, firstNumber, parseInt(currentNumber));
 });
+
+signButton.addEventListener('click', signButtonClick);
 
 function add(a, b) {
     return a + b;
@@ -146,4 +149,14 @@ function clearDisplay()
     firstInput = false;
     
     clearOperator();
+}
+
+function signButtonClick()
+{
+    
+    if(currentNumber === "" || currentNumber === undefined || currentNumber === 0) return;
+
+    currentNumber *= -1;
+
+    display.textContent = currentNumber;
 }
