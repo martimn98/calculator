@@ -1,8 +1,12 @@
 const numbers = document.querySelectorAll(".button.number");
 const display = document.querySelector(".screen");
+
 const clearButton = document.querySelector(".button.clear");
 const equalButton = document.querySelector(".button.equal");
 const signButton = document.querySelector(".button.sign");
+const percentButton = document.querySelector(".button.percent");
+const dotButton = document.querySelector(".button.dot");
+
 const operators = document.querySelectorAll(".button.operator");
 
 let currentOperator = "";
@@ -26,10 +30,14 @@ operators.forEach(element => {
 clearButton.addEventListener('click', clearDisplay);
 
 equalButton.addEventListener('click', function (e) {
-    operate(e, currentOperator, firstNumber, parseInt(currentNumber));
+    operate(e, currentOperator, firstNumber, parseFloat(currentNumber));
 });
 
 signButton.addEventListener('click', signButtonClick);
+
+percentButton.addEventListener('click', percentButtonClick);
+
+dotButton.addEventListener('click', dotButtonClick);
 
 function add(a, b) {
     return a + b;
@@ -66,7 +74,7 @@ function operate(e, operator, a, b)
         result = divide(a, b);
 
     currentNumber = result;
-    display.textContent = currentNumber;
+    updateDisplay(currentNumber);
 
     if(e.currentTarget.textContent === "=")
         clearOperator();
@@ -77,12 +85,10 @@ function operate(e, operator, a, b)
 }
 function numberClick(e)
 {
-    if(currentDigits >= maxDigits) return;
-
     if(firstInput)
     {
         currentNumber = e.currentTarget.textContent;
-        display.textContent = currentNumber;
+        updateDisplay(currentNumber);
         currentDigits++;
         firstInput = false;
         return;
@@ -91,7 +97,7 @@ function numberClick(e)
     currentNumber += e.currentTarget.textContent;
     currentDigits++;
 
-    display.textContent = currentNumber;
+    updateDisplay(currentNumber);
 }
 
 function operatorClick(e)
@@ -103,12 +109,12 @@ function operatorClick(e)
     {
         if(firstNumber != undefined && currentOperator != ""){
             console.log("first number:" + firstNumber + "\ncurrent number:" + currentNumber);
-            operate(e, currentOperator, firstNumber, parseInt(currentNumber));
+            operate(e, currentOperator, firstNumber, parseFloat(currentNumber));
         }
 
         clearOperator();
 
-        firstNumber = parseInt(currentNumber);
+        firstNumber = parseFloat(currentNumber);
 
         e.currentTarget.classList.add("selected");
         currentOperatorElement = e.currentTarget;
@@ -118,11 +124,11 @@ function operatorClick(e)
         currentOperator = e.currentTarget.textContent;
     }
     else if(currentOperator != ""){
-        operate(e, currentOperator, firstNumber, parseInt(currentNumber));
+        operate(e, currentOperator, firstNumber, parseFloat(currentNumber));
         return;
     }
 
-    firstNumber = parseInt(currentNumber);
+    firstNumber = parseFloat(currentNumber);
 
     e.currentTarget.classList.add("selected");
     currentOperatorElement = e.currentTarget;
@@ -144,7 +150,7 @@ function clearOperator()
 function clearDisplay()
 {
     currentNumber = "";
-    display.textContent = currentNumber;
+    updateDisplay(currentNumber);
     currentDigits = 0;
     firstInput = false;
     
@@ -152,11 +158,55 @@ function clearDisplay()
 }
 
 function signButtonClick()
-{
-    
+{ 
     if(currentNumber === "" || currentNumber === undefined || currentNumber === 0) return;
 
     currentNumber *= -1;
 
-    display.textContent = currentNumber;
+    updateDisplay(currentNumber);
+}
+
+function percentButtonClick()
+{
+    currentNumber *= 0.01;
+
+    updateDisplay(currentNumber);
+
+}
+
+function updateDisplay(number)
+{
+    const numStr = number.toString();
+    const digits = numStr.length;
+    const parts = numStr.split(".");
+    let numToDisplay;
+    
+    if(digits > maxDigits)
+    {
+        if(parts[0].length >= maxDigits)
+        { 
+            numToDisplay = Math.round(parseFloat(number) / (Math.pow(10, parts[0].length - maxDigits + 3)));
+
+            numToDisplay = numToDisplay.toString() + "E" + (parts[0].length - maxDigits + 3).toString();
+        }
+        else if(parts[0].length + parts[1].length >= maxDigits)
+        {
+            numToDisplay = Math.round(parseFloat(number) * Math.pow(10, maxDigits - parts[0].length)) / Math.pow(10, maxDigits - parts[0].length);
+        }
+
+        display.textContent = numToDisplay;
+    }
+    else
+    {
+        display.textContent = currentNumber;
+    }
+}
+
+function dotButtonClick()
+{
+    if(currentNumber.indexOf(".") === -1)
+    {
+        currentNumber += ".";
+        updateDisplay(currentNumber);
+    }
 }
