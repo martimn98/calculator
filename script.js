@@ -17,7 +17,6 @@ let currentNumber = "";
 let firstInput = false;
 
 const maxDigits = 7;
-let currentDigits = 0;
 
 numbers.forEach(element => {
     element.addEventListener('click', numberClick);
@@ -52,7 +51,10 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-    if(b == 0) return;
+    if(b == 0){
+        dividingByZero();
+        return;
+    }    
     return a / b;
 }
 
@@ -89,13 +91,11 @@ function numberClick(e)
     {
         currentNumber = e.currentTarget.textContent;
         updateDisplay(currentNumber);
-        currentDigits++;
         firstInput = false;
         return;
     }
 
     currentNumber += e.currentTarget.textContent;
-    currentDigits++;
 
     updateDisplay(currentNumber);
 }
@@ -120,7 +120,6 @@ function operatorClick(e)
         currentOperatorElement = e.currentTarget;
         firstInput = true;
 
-        currentDigits = 0;
         currentOperator = e.currentTarget.textContent;
     }
     else if(currentOperator != ""){
@@ -134,7 +133,6 @@ function operatorClick(e)
     currentOperatorElement = e.currentTarget;
     firstInput = true;
 
-    currentDigits = 0;
     currentOperator = e.currentTarget.textContent;
 }
 
@@ -151,7 +149,6 @@ function clearDisplay()
 {
     currentNumber = "";
     updateDisplay(currentNumber);
-    currentDigits = 0;
     firstInput = false;
     
     clearOperator();
@@ -209,4 +206,12 @@ function dotButtonClick()
         currentNumber += ".";
         updateDisplay(currentNumber);
     }
+}
+
+function dividingByZero()
+{
+    clearDisplay();
+    firstInput = true;
+
+    display.textContent = "nope";
 }
